@@ -92,11 +92,15 @@ const styles = StyleSheet.create({
   },
   itemTitle: {
     fontSize: 24,
+    fontSize: 24,
     color: '#000',
+    textTransform: 'uppercase',
     textTransform: 'uppercase',
   },
   itemDetails: {
     fontSize: 14,
+    opacity: 0.7,
+    color: '#000',
     opacity: 0.7,
     color: '#000',
   }
