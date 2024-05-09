@@ -1,5 +1,7 @@
-import { StackNavigationProp } from "@react-navigation/stack";
-import React from "react"
+//Login.tsx
+/* eslint-disable prettier/prettier */
+import { StackNavigationProp } from '@react-navigation/stack';
+import React from 'react';
 import {
     SafeAreaView,
     Button,
@@ -7,8 +9,8 @@ import {
     Text,
     TextInput,
     View,
-    Alert
-} from "react-native";
+    Alert,
+} from 'react-native';
 
 const styles = StyleSheet.create({
     screen: {
