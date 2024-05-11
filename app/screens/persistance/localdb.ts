@@ -1,4 +1,4 @@
-//localdb.ts
+//localdb.ts se encuentra en app/screens/persistance
 import SQLite from 'react-native-sqlite-storage';
 
 export default class LocalDB {

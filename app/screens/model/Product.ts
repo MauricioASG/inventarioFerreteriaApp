@@ -1,4 +1,4 @@
-//Products.ts
+//Products.ts se encuentra en app/screens/model
 /* eslint-disable prettier/prettier */
 export interface Product{
   id: number;

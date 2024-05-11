@@ -1,4 +1,4 @@
-//Home.tsx
+//Home.tsx se encuentra en app/screens/Home.tsx
 /* eslint-disable prettier/prettier */
 import { RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -41,30 +41,32 @@ function Home({ navigation }: HomeProps): React.JSX.Element {
 
   useEffect(() => {
     LocalDB.init();
-    async function fetchData() {
-      try {
-        const db = await LocalDB.connect();
-        db.transaction(tx => {
-          tx.executeSql(
-            'SELECT * FROM productos',
-            [],
-            (_, res) => {
-              let prods = [];
-              for (let i = 0; i < res.rows.length; i++) {
-                prods.push(res.rows.item(i));
-              }
-              setProducts(prods);
-            },
-            error => console.error({ error }),
-          );
-        });
-      } catch (error) {
-        console.error('Error fetching data:', error);
+    navigation.addListener('focus', async ()=> {
+      async function fetchData() {
+        try {
+          const db = await LocalDB.connect();
+          db.transaction(tx => {
+            tx.executeSql(
+              'SELECT * FROM productos',
+              [],
+              (_, res) => {
+                let prods = [];
+                for (let i = 0; i < res.rows.length; i++) {
+                  prods.push(res.rows.item(i));
+                }
+                setProducts(prods);
+              },
+              error => console.error({ error }),
+            );
+          });
+        } catch (error) {
+          console.error('Error fetching data:', error);
+        }
       }
-    }
+      fetchData();
+    }, []);
+    }, [navigation]);
 
-    fetchData();
-  }, []);
 
   return (
     <SafeAreaView>
@@ -92,18 +94,14 @@ const styles = StyleSheet.create({
   },
   itemTitle: {
     fontSize: 24,
-    fontSize: 24,
     color: '#000',
-    textTransform: 'uppercase',
     textTransform: 'uppercase',
   },
   itemDetails: {
     fontSize: 14,
     opacity: 0.7,
     color: '#000',
-    opacity: 0.7,
-    color: '#000',
-  }
+  },
 });
 
 export default Home;
