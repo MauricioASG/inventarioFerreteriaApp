@@ -13,6 +13,27 @@ export default class LocalDB {
     }
   }
 
+  // Agregamos un nuevo método en la clase LocalDB para insertar movimientos
+  static async insertMovement(
+    idProducto: number,
+    fechaHora: string,
+    cantidad: number,
+  ) {
+    try {
+      const db = await LocalDB.connect();
+      db.transaction(tx => {
+        tx.executeSql(
+          'INSERT INTO movimientos (id_producto, fecha_hora, cantidad) VALUES (?, ?, ?)',
+          [idProducto, fechaHora, cantidad],
+          () => console.log('Movimiento registrado correctamente'),
+          error => console.error('Error al registrar el movimiento:', error),
+        );
+      });
+    } catch (error) {
+      console.error('Error al conectar con la base de datos:', error);
+    }
+  }
+
   static async init() {
     try {
       const db = await LocalDB.connect();
@@ -29,6 +50,18 @@ export default class LocalDB {
           [],
           () => console.log('Tabla "productos" creada correctamente'),
           error => console.error('Error al crear la tabla "productos":', error),
+        );
+        tx.executeSql(
+          `CREATE TABLE IF NOT EXISTS movimientos ( 
+            id_movimiento   INTEGER        PRIMARY KEY AUTOINCREMENT,
+            id_producto     INTEGER        NOT NULL,
+            fecha_hora      DATETIME       NOT NULL,
+            cantidad        INTEGER        NOT NULL
+          );`,
+          [],
+          () => console.log('Tabla "movimientos" creada correctamente'),
+          error =>
+            console.error('Error al crear la tabla "movimientos":', error),
         );
       });
     } catch (error) {

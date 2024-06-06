@@ -8,6 +8,7 @@ import { Product } from './model/Product';
 import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
 import { RootStackParamList } from '../../App';
 import LocalDB from './persistance/localdb';
+import WebServiceParams from './WSParams';
 
 type HomeScreenProps = StackNavigationProp<RootStackParamList, 'Home'>;
 type HomeScreenRoute = RouteProp<RootStackParamList, 'Home'>;
@@ -25,7 +26,7 @@ function Home({ navigation }: HomeProps): React.JSX.Element {
     <TouchableOpacity
       style={styles.productItem}
       onPress={() => navigation.push('ProductDetails', { product: item })}>
-      <View style={{flexDirection: 'row'}}>
+      <View style={{ flexDirection: 'row' }}>
         <View style={{ flexDirection: 'column', flexGrow: 9 }}>
           <Text style={styles.itemTitle}>{item.nombre}</Text>
         </View>
@@ -39,34 +40,51 @@ function Home({ navigation }: HomeProps): React.JSX.Element {
     </TouchableOpacity>
   );
 
+  //Esta parte se encarga de mostrar los datos obtenidos de la API o Web Service
   useEffect(() => {
     LocalDB.init();
-    navigation.addListener('focus', async ()=> {
-      async function fetchData() {
-        try {
-          const db = await LocalDB.connect();
-          db.transaction(tx => {
-            tx.executeSql(
-              'SELECT * FROM productos',
-              [],
-              (_, res) => {
-                let prods = [];
-                for (let i = 0; i < res.rows.length; i++) {
-                  prods.push(res.rows.item(i));
-                }
-                setProducts(prods);
-              },
-              error => console.error({ error }),
-            );
-          });
-        } catch (error) {
-          console.error('Error fetching data:', error);
-        }
+    navigation.addListener('focus', async () => {
+      try {
+        const response = await fetch(
+          `http://WebServiceParams.host':$(WebServiceParams.port)(productos`,
+          {
+            method: 'GET',
+            headers: {
+              'Accept': 'aplication/json',
+              'Content-type': 'text/plain',
+            },
+          },
+        );
+        setProducts(await response.json());
+      } catch (error) {
+        console.error(error);
       }
-      fetchData();
-    }, []);
-    }, [navigation]);
+    });
+  }, [navigation]);
 
+  //   async function fetchData() {
+  //     try {
+  //       const db = await LocalDB.connect();
+  //       db.transaction(tx => {
+  //         tx.executeSql(
+  //           'SELECT * FROM productos',
+  //           [],
+  //           (_, res) => {
+  //             let prods = [];
+  //             for (let i = 0; i < res.rows.length; i++) {
+  //               prods.push(res.rows.item(i));
+  //             }
+  //             setProducts(prods);
+  //           },
+  //           error => console.error({ error }),
+  //         );
+  //       });
+  //     } catch (error) {
+  //       console.error('Error fetching data:', error);
+  //     }
+  //   }
+  //   fetchData();
+  // }, []);
 
   return (
     <SafeAreaView>
